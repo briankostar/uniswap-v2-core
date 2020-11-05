@@ -15,16 +15,22 @@ import {
 } from 'ethers/utils'
 import 'mocha'
 import factoryAbi from '../build/contracts/UniswapV2Factory.json'
+import ERC20Abi from '../build/contracts/ERC20.json'
+import ERC20bAbi from '../build/contracts/ERC20b.json'
 // import { convertToProtocolPercentage, generateEthersWrappers, IMultipleEthersWrappers } from '../src/utils'
 
+
 import uniswapFactory from '../build0/UniswapV2Factory.json'
+import uniswapPair from '../build0/UniswapV2Pair.json'
+import erc20 from '../build0/UniswapV2Factory.json'
+import erc20b from '../build0/UniswapV2Factory.json'
 // import truffleContract from '@truffle/contract'
 // const truffleContract = require('@truffle/contract')
 // const UniswapV2Factory = truffleContract(uniswapFactory)
 
-// const UniswapV2Factory = artifacts.require('UniswapV2Factory')
-const ERC20 = artifacts.require('ERC20')
-const ERC20b = artifacts.require('ERC20b')
+const UniswapV2Factory2 = artifacts.require('UniswapV2Factory')
+// const ERC20 = artifacts.require('ERC20')
+// const ERC20b = artifacts.require('ERC20b')
 
 const { expect } = chai
 chai.use(chaiAsPromised)
@@ -46,6 +52,8 @@ contract('UniswapV2Factory', async (accounts: string[]) => {
   //   return jsonArtifact.networks[network.chainId].address
   //   const contractAddress = await getAddress(artifact, provider)
   const contractAddress = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e' //UniswapV2Factory.address
+  const erc20Address = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e' //UniswapV2Factory.address
+  const erc20bAddress = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e' //UniswapV2Factory.address
   //   const signer = provider.getSigner(OWNER)
   //   const wrappedContract = new Contract(contractAddress, UniswapV2Factory.abi, signer)
 
@@ -61,19 +69,19 @@ contract('UniswapV2Factory', async (accounts: string[]) => {
     await blockchainLifecycle.revertAsync()
   })
 
-  before(async () => {
-    await blockchainLifecycle.startAsync()
-  })
+  // before(async () => {
+  //   await blockchainLifecycle.startAsync()
+  // })
 
-  after(async () => {
-    await blockchainLifecycle.revertAsync()
-  })
+  // after(async () => {
+  //   await blockchainLifecycle.revertAsync()
+  // })
 
   before('set up wrapper', async () => {
     // this will actually be deployed again..
     factoryWrapper = new Contract(contractAddress, uniswapFactory.abi, OWNER_SIGNER)
-    erc20Wrapper = new Contract(ERC20.address, ERC20.abi, OWNER_SIGNER)
-    erc20bWrapper = new Contract(ERC20b.address, ERC20b.abi, OWNER_SIGNER)
+    erc20Wrapper = new Contract(erc20Address, erc20.abi, OWNER_SIGNER)
+    erc20bWrapper = new Contract(erc20bAddress, erc20b.abi, OWNER_SIGNER)
   })
 
   describe('Factory', async () => {
@@ -119,15 +127,15 @@ contract('UniswapV2Factory', async (accounts: string[]) => {
     // create pair.
     // need weth9, 2 erc20s.
     it('should create a pair', async () => {
-      let tokenA = erc20Wrapper.address
-      let tokenB = erc20bWrapper.address
+      let tokenA = erc20Address
+      let tokenB = erc20bAddress
       console.log('tokenA', tokenA)
       console.log('tokenB', tokenB)
       console.log('contractAddress', contractAddress)
       console.log('factoryWrapper.address', factoryWrapper.address)
       //   console.log('factoryWrapper.byte', uniswapFactory.evm.bytecode.object) // correct
 
-      const uniBytecode = `0x${uniswapFactory.evm.bytecode.object}`
+      const uniBytecode = `0x${uniswapPair.evm.bytecode.object}`
       const create2Address = getCreate2Address(contractAddress, [tokenA, tokenB], uniBytecode)
       console.log('create2Address', create2Address)
       await factoryWrapper.createPair(tokenA, tokenB)

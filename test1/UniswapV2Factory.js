@@ -22,12 +22,15 @@ const utils_1 = require("ethers/utils");
 require("mocha");
 // import { convertToProtocolPercentage, generateEthersWrappers, IMultipleEthersWrappers } from '../src/utils'
 const UniswapV2Factory_json_1 = __importDefault(require("../build0/UniswapV2Factory.json"));
+const UniswapV2Pair_json_1 = __importDefault(require("../build0/UniswapV2Pair.json"));
+const UniswapV2Factory_json_2 = __importDefault(require("../build0/UniswapV2Factory.json"));
+const UniswapV2Factory_json_3 = __importDefault(require("../build0/UniswapV2Factory.json"));
 // import truffleContract from '@truffle/contract'
 // const truffleContract = require('@truffle/contract')
 // const UniswapV2Factory = truffleContract(uniswapFactory)
-// const UniswapV2Factory = artifacts.require('UniswapV2Factory')
-const ERC20 = artifacts.require('ERC20');
-const ERC20b = artifacts.require('ERC20b');
+const UniswapV2Factory2 = artifacts.require('UniswapV2Factory');
+// const ERC20 = artifacts.require('ERC20')
+// const ERC20b = artifacts.require('ERC20b')
 const { expect } = chai_1.default;
 chai_1.default.use(chai_as_promised_1.default);
 contract('UniswapV2Factory', (accounts) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,6 +48,8 @@ contract('UniswapV2Factory', (accounts) => __awaiter(void 0, void 0, void 0, fun
     //   return jsonArtifact.networks[network.chainId].address
     //   const contractAddress = await getAddress(artifact, provider)
     const contractAddress = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e'; //UniswapV2Factory.address
+    const erc20Address = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e'; //UniswapV2Factory.address
+    const erc20bAddress = '0xb36a2919D799D7519D805c4b59fB62FDd6a6A16e'; //UniswapV2Factory.address
     //   const signer = provider.getSigner(OWNER)
     //   const wrappedContract = new Contract(contractAddress, UniswapV2Factory.abi, signer)
     let factoryWrapper;
@@ -56,17 +61,17 @@ contract('UniswapV2Factory', (accounts) => __awaiter(void 0, void 0, void 0, fun
     afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
         yield blockchainLifecycle.revertAsync();
     }));
-    before(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield blockchainLifecycle.startAsync();
-    }));
-    after(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield blockchainLifecycle.revertAsync();
-    }));
+    // before(async () => {
+    //   await blockchainLifecycle.startAsync()
+    // })
+    // after(async () => {
+    //   await blockchainLifecycle.revertAsync()
+    // })
     before('set up wrapper', () => __awaiter(void 0, void 0, void 0, function* () {
         // this will actually be deployed again..
         factoryWrapper = new ethers_1.Contract(contractAddress, UniswapV2Factory_json_1.default.abi, OWNER_SIGNER);
-        erc20Wrapper = new ethers_1.Contract(ERC20.address, ERC20.abi, OWNER_SIGNER);
-        erc20bWrapper = new ethers_1.Contract(ERC20b.address, ERC20b.abi, OWNER_SIGNER);
+        erc20Wrapper = new ethers_1.Contract(erc20Address, UniswapV2Factory_json_2.default.abi, OWNER_SIGNER);
+        erc20bWrapper = new ethers_1.Contract(erc20bAddress, UniswapV2Factory_json_3.default.abi, OWNER_SIGNER);
     }));
     describe('Factory', () => __awaiter(void 0, void 0, void 0, function* () {
         beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -81,13 +86,13 @@ contract('UniswapV2Factory', (accounts) => __awaiter(void 0, void 0, void 0, fun
         after(() => __awaiter(void 0, void 0, void 0, function* () {
             yield blockchainLifecycle.revertAsync();
         }));
-        it('should get feeTo', () => __awaiter(void 0, void 0, void 0, function* () {
-            let feeTo = yield factoryWrapper.feeTo();
-            console.log('feeTo', feeTo);
-            //   let totalSupply = await erc20Wrapper.totalSupply()
-            //   console.log('totalSupply', totalSupply)
-            expect(feeTo).to.equal(OWNER);
-        }));
+        // it('should get feeTo', async () => {
+        //   let feeTo = await factoryWrapper.feeTo()
+        //   console.log('feeTo', feeTo)
+        //   //   let totalSupply = await erc20Wrapper.totalSupply()
+        //   //   console.log('totalSupply', totalSupply)
+        //   expect(feeTo).to.equal(OWNER)
+        // })
         it('should get feeTo', () => __awaiter(void 0, void 0, void 0, function* () {
             let feeToSetter = yield factoryWrapper.feeToSetter();
             console.log('feeToSetter', feeToSetter);
@@ -106,14 +111,14 @@ contract('UniswapV2Factory', (accounts) => __awaiter(void 0, void 0, void 0, fun
         // create pair.
         // need weth9, 2 erc20s.
         it('should create a pair', () => __awaiter(void 0, void 0, void 0, function* () {
-            let tokenA = erc20Wrapper.address;
-            let tokenB = erc20bWrapper.address;
+            let tokenA = erc20Address;
+            let tokenB = erc20bAddress;
             console.log('tokenA', tokenA);
             console.log('tokenB', tokenB);
             console.log('contractAddress', contractAddress);
             console.log('factoryWrapper.address', factoryWrapper.address);
             //   console.log('factoryWrapper.byte', uniswapFactory.evm.bytecode.object) // correct
-            const uniBytecode = `0x${UniswapV2Factory_json_1.default.evm.bytecode.object}`;
+            const uniBytecode = `0x${UniswapV2Pair_json_1.default.evm.bytecode.object}`;
             const create2Address = getCreate2Address(contractAddress, [tokenA, tokenB], uniBytecode);
             console.log('create2Address', create2Address);
             yield factoryWrapper.createPair(tokenA, tokenB);

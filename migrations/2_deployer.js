@@ -1,16 +1,15 @@
 const { Wallet } = require('ethers')
 
-const json = require('../build0/UniswapV2Factory.json')
-const contract = require('@truffle/contract')
+// const json = require('../build0/UniswapV2Factory.json')
+// const contract = require('@truffle/contract')
+// const UniswapV2Factory = contract(json)
+// UniswapV2Factory.setProvider(this.web3._provider)
 
 // const UniswapV2ERC20 = artifacts.require('UniswapV2ERC20')
-// const UniswapV2Factory = artifacts.require('UniswapV2Factory')
+const UniswapV2Factory = artifacts.require('UniswapV2Factory')
 // const UniswapV2Factory = artifacts.require('../build0/UniswapV2Factory.json')
 // const UniswapV2Pair = artifacts.require('UniswapV2Pair')
 
-const UniswapV2Factory = contract(json)
-// console.log('this.web3._provider', this.web3._provider)
-UniswapV2Factory.setProvider(this.web3._provider)
 
 module.exports = async function(deployer, environment, accounts) {
   const ownerAddress = Wallet.fromMnemonic(process.env.OWNER_MNEMONIC).address
