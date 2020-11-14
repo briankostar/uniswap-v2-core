@@ -7,5 +7,5 @@ UniswapV2Factory.setProvider(this.web3._provider)
 
 module.exports = async function(deployer, environment, accounts) {
   const ownerAddress = Wallet.fromMnemonic(process.env.OWNER_MNEMONIC).address
-  await deployer.deploy(UniswapV2Factory, ownerAddress, { from: ownerAddress, overwrite: false })
+  await deployer.deploy(ack, ownerAddress, { from: ownerAddress, overwrite: false })
 }

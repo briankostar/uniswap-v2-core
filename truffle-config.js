@@ -18,7 +18,7 @@
  *
  */
 
-const { getRinkebyProvider } = require('./providers')
+const { getRinkebyProvider, getMumbaiProvider } = require('./providers')
 const { parseUnits } = require('ethers/utils')
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
@@ -55,6 +55,13 @@ module.exports = {
       gas: 6900000,
       gasPrice: parseUnits('6', 'gwei').toString(),
       network_id: 4,
+      skipDryRun: true
+    },
+    mumbai: {
+      provider: getMumbaiProvider,
+      gas: 6900000,
+      gasPrice: parseUnits('6', 'gwei').toString(),
+      network_id: 80001,
       skipDryRun: true
     }
     // Another network with more advanced options...
